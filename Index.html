@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verso — Where poetry finds its voice.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F4EE;
+    --paper:#FEFCF8;
+    --ink:#1C1912;
+    --ink-soft:#5E584C;
+    --indigo:#221E5C;
+    --indigo-deep:#151238;
+    --terracotta:#B5502C;
+    --gold:#B4893A;
+    --line:rgba(28,25,18,0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    position:relative;
+  }
+  /* grain */
+  body::before{
+    content:'';position:fixed;inset:0;z-index:999;pointer-events:none;
+    opacity:0.035;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  h1,h2,h3,.serif{font-family:'Cormorant Garamond',serif;font-weight:500;color:var(--ink);}
+  .container{max-width:1220px;margin:0 auto;padding:0 clamp(20px,5vw,64px);}
+  a{color:inherit;text-decoration:none;}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:100;background:rgba(247,244,238,0.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  nav .container{display:flex;align-items:center;justify-content:space-between;height:78px;}
+  .logo{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:700;letter-spacing:0.01em;}
+  .logo em{color:var(--terracotta);font-style:normal;}
+  .nav-links{display:flex;gap:clamp(20px,3vw,38px);align-items:center;}
+  .nav-links a.link{font-size:14px;color:var(--ink-soft);font-weight:500;transition:color .25s;}
+  .nav-links a.link:hover{color:var(--ink);}
+  .btn{display:inline-block;padding:13px 28px;border-radius:1px;font-size:14px;font-weight:600;transition:all .3s ease;letter-spacing:0.01em;}
+  .btn-primary{background:var(--indigo-deep);color:#fff;box-shadow:0 1px 0 rgba(0,0,0,0.05);}
+  .btn-primary:hover{background:var(--terracotta);transform:translateY(-1px);}
+  .nav-cta{display:none;}
+  @media(min-width:820px){.nav-cta{display:inline-block;}}
+
+  /* HERO */
+  .hero{position:relative;padding:clamp(56px,8vw,88px) 0 clamp(50px,7vw,90px);overflow:visible;}
+  .hero-grid{display:grid;grid-template-columns:1.15fr 0.85fr;gap:clamp(30px,5vw,70px);align-items:center;}
+  @media(max-width:920px){.hero-grid{grid-template-columns:1fr;}}
+
+  .hero-eyebrow{font-size:12.5px;letter-spacing:0.16em;text-transform:uppercase;color:var(--terracotta);font-weight:700;margin-bottom:24px;display:flex;align-items:center;gap:10px;}
+  .hero-eyebrow::before{content:'';width:28px;height:1.5px;background:var(--terracotta);}
+  h1.hero-title{font-size:clamp(46px,7vw,92px);line-height:0.98;letter-spacing:-0.015em;max-width:13ch;}
+  h1.hero-title .accent{font-style:italic;color:var(--indigo-deep);position:relative;}
+  .hero-sub{font-size:clamp(17px,1.6vw,19px);color:var(--ink-soft);max-width:44ch;margin:28px 0 38px;line-height:1.65;}
+  .hero-actions{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
+  .hero-actions .btn-primary{padding:16px 34px;font-size:15px;}
+  .btn-text{font-size:14.5px;font-weight:600;color:var(--ink);border-bottom:1.5px solid var(--terracotta);padding-bottom:3px;}
+  .hero-hint{font-size:13px;color:var(--ink-soft);margin-top:18px;}
+
+  /* Floating manuscript card */
+  .manuscript{
+    background:var(--paper);
+    border:1px solid var(--line);
+    padding:38px 36px 32px;
+    box-shadow:0 30px 60px -20px rgba(28,25,18,0.22), 0 2px 0 rgba(28,25,18,0.04);
+    transform:rotate(2.2deg);
+    position:relative;
+  }
+  .manuscript::before{
+    content:'';position:absolute;top:14px;left:14px;right:14px;bottom:14px;
+    border:1px solid rgba(28,25,18,0.08);pointer-events:none;
+  }
+  .manuscript-label{font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:700;margin-bottom:18px;}
+  .manuscript-poem{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(19px,2.2vw,23px);line-height:1.75;color:var(--ink);}
+  .manuscript-annotate{
+    margin-top:22px;padding-top:18px;border-top:1px dashed var(--line);
+    font-size:12.5px;color:var(--terracotta);font-weight:600;
+    display:flex;justify-content:space-between;
+  }
+  .manuscript-back{
+    position:absolute;inset:0;
+    background:var(--indigo-deep);
+    transform:rotate(-3.5deg);
+    z-index:-1;
+    border-radius:1px;
+  }
+  .manuscript-wrap{position:relative;max-width:400px;margin-left:auto;}
+  .mega-quote{
+    position:absolute;top:-58px;left:-18px;
+    font-family:'Cormorant Garamond',serif;
+    font-size:180px;line-height:1;color:var(--indigo-deep);
+    opacity:0.09;z-index:-1;user-select:none;
+  }
+
+  /* marquee strip */
+  .marquee-wrap{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--indigo-deep);overflow:hidden;padding:16px 0;margin-top:clamp(60px,8vw,100px);}
+  .marquee{display:flex;gap:48px;white-space:nowrap;animation:scroll 32s linear infinite;width:max-content;}
+  .marquee span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;color:#DAD8F2;display:flex;align-items:center;gap:48px;}
+  .marquee span::after{content:'✦';color:var(--terracotta);font-style:normal;font-size:12px;}
+  @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+  /* SECTION HEADERS */
+  .section{padding:clamp(80px,10vw,130px) 0;}
+  .section-alt{background:var(--indigo-deep);color:#fff;}
+  .eyebrow{font-size:12.5px;letter-spacing:0.15em;text-transform:uppercase;color:var(--terracotta);font-weight:700;margin-bottom:18px;}
+  .section-alt .eyebrow{color:#E8A165;}
+  h2.section-title{font-size:clamp(32px,4.5vw,54px);max-width:18ch;line-height:1.1;margin-bottom:20px;}
+  .section-alt h2.section-title{color:#fff;}
+  .section-desc{color:var(--ink-soft);max-width:50ch;font-size:16.5px;line-height:1.7;}
+  .section-alt .section-desc{color:#B9B6DC;}
+  .section-head-row{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;margin-bottom:58px;}
+  .section-num{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--ink-soft);letter-spacing:0.05em;}
+  .section-alt .section-num{color:#8B87BE;}
+
+  /* DEVICES — editorial list, not boxes */
+  .device-list{border-top:1px solid var(--line);}
+  .device-row{
+    display:grid;grid-template-columns:100px 1fr 1.1fr;gap:32px;
+    padding:38px 0;border-bottom:1px solid var(--line);
+    align-items:start;transition:padding-left .3s ease;
+  }
+  .device-row:hover{padding-left:12px;}
+  @media(max-width:760px){.device-row{grid-template-columns:1fr;gap:12px;}}
+  .device-num{font-family:'Cormorant Garamond',serif;font-size:44px;color:var(--line);font-weight:500;}
+  .device-row:hover .device-num{color:var(--terracotta);transition:color .3s;}
+  .device-name{font-family:'Cormorant Garamond',serif;font-size:30px;margin-bottom:8px;}
+  .device-desc{font-size:14.5px;color:var(--ink-soft);line-height:1.6;}
+  .device-example{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--indigo-deep);border-left:2px solid var(--gold);padding-left:16px;line-height:1.55;}
+
+  /* AI PANEL (dark section) */
+  .ai-panel{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin-top:60px;}
+  @media(max-width:820px){.ai-panel{grid-template-columns:1fr;}}
+  .ai-panel h3{font-size:clamp(24px,3vw,32px);margin-bottom:16px;color:#fff;}
+  .ai-panel p{color:#B9B6DC;font-size:15.5px;line-height:1.7;margin-bottom:26px;}
+  .ai-feature-list{list-style:none;}
+  .ai-feature-list li{padding:11px 0;font-size:14.5px;color:#D9D7F0;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;}
+  .ai-feature-list li span{color:#E8A165;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;}
+  .ai-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.14);border-radius:2px;padding:32px;position:relative;}
+  .ai-card-label{font-size:11.5px;text-transform:uppercase;letter-spacing:0.1em;color:#8B87BE;margin-bottom:16px;}
+  .ai-card-poem{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;line-height:1.75;color:#fff;}
+  .ai-card-tag{display:inline-block;margin-top:18px;padding:5px 12px;border:1px solid rgba(232,161,101,0.5);color:#E8A165;font-size:11.5px;letter-spacing:0.06em;text-transform:uppercase;border-radius:1px;}
+
+  /* LEARNING PATH */
+  .path-row{display:flex;gap:0;margin-top:20px;overflow-x:auto;}
+  .path-step{flex:0 0 270px;background:var(--paper);border:1px solid var(--line);padding:30px 28px;margin-right:1px;position:relative;}
+  .path-badge{width:36px;height:36px;border-radius:50%;background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--indigo-deep);margin-bottom:20px;}
+  .path-step.locked .path-badge{color:var(--ink-soft);}
+  .path-step.locked{opacity:0.6;}
+  .path-step h4{font-family:'Cormorant Garamond',serif;font-size:22px;margin-bottom:10px;}
+  .path-step p{font-size:13.5px;color:var(--ink-soft);line-height:1.6;}
+  .path-xp{margin-top:18px;font-size:12px;color:var(--terracotta);font-weight:700;letter-spacing:0.04em;}
+
+  /* CTA BAND */
+  .cta-band{text-align:left;padding:clamp(80px,10vw,130px) 0;background:var(--indigo-deep);position:relative;overflow:hidden;}
+  .cta-band .container{position:relative;z-index:1;}
+  .cta-quote{position:absolute;right:-40px;top:-80px;font-family:'Cormorant Garamond',serif;font-size:340px;color:#fff;opacity:0.04;line-height:1;pointer-events:none;}
+  .cta-inner{max-width:640px;}
+  .cta-band h2{font-size:clamp(36px,5.5vw,60px);color:#fff;margin-bottom:22px;line-height:1.08;}
+  .cta-band p{color:#B9B6DC;max-width:44ch;margin-bottom:38px;font-size:17px;line-height:1.65;}
+  .cta-band .btn-primary{background:var(--terracotta);padding:17px 38px;font-size:15px;}
+  .cta-band .btn-primary:hover{background:#D0653B;}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--line);padding:60px 0 40px;background:var(--bg);}
+  .footer-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:40px;margin-bottom:50px;}
+  .footer-col h5{font-size:12px;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-soft);margin-bottom:18px;font-weight:700;}
+  .footer-col a{display:block;font-size:14.5px;color:var(--ink);margin-bottom:11px;opacity:0.82;}
+  .footer-col a:hover{opacity:1;color:var(--terracotta);}
+  .footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;border-top:1px solid var(--line);padding-top:26px;font-size:13px;color:var(--ink-soft);}
+
+  .fade-up{opacity:0;transform:translateY(26px);transition:opacity .7s ease, transform .7s ease;}
+  .fade-up.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <div class="logo">Ver<em>so</em></div>
+    <div class="nav-links">
+      <a href="#devices" class="link">Learn</a>
+      <a href="#ai" class="link">AI Poet</a>
+      <a href="#path" class="link">Paths</a>
+      <a href="#" class="link nav-cta">Log in</a>
+      <a href="#" class="btn btn-primary">Start Free</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow">The first learning platform built for poets</div>
+        <h1 class="hero-title">Where poetry<br>finds its <span class="accent">voice.</span></h1>
+        <p class="hero-sub">Learn the craft behind beautiful words — meter, metaphor, form, and feeling — through short lessons, an AI mentor, and a living encyclopedia of verse.</p>
+        <div class="hero-actions">
+          <a href="#" class="btn btn-primary">Begin your first lesson</a>
+          <a href="#devices" class="btn-text">Explore the craft</a>
+        </div>
+        <p class="hero-hint">No credit card. 7 free lessons to start.</p>
+      </div>
+
+      <div class="manuscript-wrap">
+        <div class="mega-quote">"</div>
+        <div class="manuscript-back"></div>
+        <div class="manuscript">
+          <div class="manuscript-label">Line-by-line — AI Analysis</div>
+          <div class="manuscript-poem">"Hope is the thing with feathers—<br>that perches in the soul—<br>and sings the tune without the words—<br>and never stops—at all—"</div>
+          <div class="manuscript-annotate">
+            <span>Extended metaphor</span>
+            <span>Trochaic meter</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="marquee-wrap">
+    <div class="marquee">
+      <span><span>Metaphor</span><span>Enjambment</span><span>Volta</span><span>Iambic Pentameter</span><span>Sonnet</span><span>Villanelle</span><span>Assonance</span><span>Metaphor</span><span>Enjambment</span><span>Volta</span><span>Iambic Pentameter</span><span>Sonnet</span><span>Villanelle</span><span>Assonance</span></span>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="devices">
+  <div class="container">
+    <div class="section-head-row">
+      <div>
+        <div class="eyebrow">The Poetry Encyclopedia</div>
+        <h2 class="section-title">Every device, explained the way a great teacher would.</h2>
+        <p class="section-desc">Definitions are only the start. Every entry pairs history, real examples from great poems, and an AI explanation tuned to how you learn.</p>
+      </div>
+      <div class="section-num">01 / Learn</div>
+    </div>
+
+    <div class="device-list">
+      <div class="device-row fade-up">
+        <div class="device-num">01</div>
+        <div>
+          <div class="device-name">Metaphor</div>
+          <div class="device-desc">A direct comparison that lets one thing speak as another, without saying "like" or "as."</div>
+        </div>
+        <div class="device-example">"Hope is the thing with feathers—"</div>
+      </div>
+      <div class="device-row fade-up">
+        <div class="device-num">02</div>
+        <div>
+          <div class="device-name">Enjambment</div>
+          <div class="device-desc">A sentence that spills past the line break, carrying the reader forward before the thought resolves.</div>
+        </div>
+        <div class="device-example">"...and miles to go before I sleep, / and miles to go—"</div>
+      </div>
+      <div class="device-row fade-up">
+        <div class="device-num">03</div>
+        <div>
+          <div class="device-name">Volta</div>
+          <div class="device-desc">The turn — a shift in argument, tone, or emotion, most famous in the sonnet's final couplet.</div>
+        </div>
+        <div class="device-example">"...but thy eternal summer shall not fade."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="ai">
+  <div class="container">
+    <div class="section-head-row">
+      <div>
+        <div class="eyebrow">AI, in service of craft</div>
+        <h2 class="section-title">An AI tutor that reads poems the way poets do.</h2>
+        <p class="section-desc">Not another poem generator. Verso's AI explains meter line by line, detects symbolism, and rewrites your draft while preserving your voice.</p>
+      </div>
+      <div class="section-num">02 / AI</div>
+    </div>
+
+    <div class="ai-panel fade-up">
+      <div>
+        <h3>Drop in a poem. Understand it completely.</h3>
+        <p>Paste any poem — yours or a classic — and get a full breakdown: rhyme scheme, meter, imagery, tone shifts, and the choices that make it work.</p>
+        <ul class="ai-feature-list">
+          <li>Meter &amp; scansion detection <span>Live</span></li>
+          <li>Symbolism &amp; theme analysis <span>Live</span></li>
+          <li>Line-by-line explanation <span>Live</span></li>
+          <li>Voice-preserving rewrite suggestions <span>Beta</span></li>
+        </ul>
+      </div>
+      <div class="ai-card">
+        <div class="ai-card-label">AI Analysis — "The Road Not Taken"</div>
+        <div class="ai-card-poem">"Two roads diverged in a yellow wood,<br>And sorry I could not travel both..."</div>
+        <div class="ai-card-tag">Meter: Iambic tetrameter</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="path">
+  <div class="container">
+    <div class="section-head-row">
+      <div>
+        <div class="eyebrow">Learn like it's a language</div>
+        <h2 class="section-title">A path from your first line to your first collection.</h2>
+        <p class="section-desc">Short daily lessons, streaks that mean something, and challenges that turn practice into a body of work.</p>
+      </div>
+      <div class="section-num">03 / Practice</div>
+    </div>
+
+    <div class="path-row">
+      <div class="path-step fade-up">
+        <div class="path-badge">1</div>
+        <h4>Foundations</h4>
+        <p>Rhythm, rhyme, and the building blocks of a line.</p>
+        <div class="path-xp">+120 XP</div>
+      </div>
+      <div class="path-step fade-up">
+        <div class="path-badge">2</div>
+        <h4>Imagery &amp; Metaphor</h4>
+        <p>Making the abstract feel physical.</p>
+        <div class="path-xp">+180 XP</div>
+      </div>
+      <div class="path-step fade-up">
+        <div class="path-badge">3</div>
+        <h4>Form</h4>
+        <p>Sonnet, villanelle, haiku, free verse.</p>
+        <div class="path-xp">+220 XP</div>
+      </div>
+      <div class="path-step locked fade-up">
+        <div class="path-badge">4</div>
+        <h4>Your Voice</h4>
+        <p>Write and workshop an original collection.</p>
+        <div class="path-xp">+300 XP</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="cta-quote">"</div>
+  <div class="container">
+    <div class="cta-inner">
+      <h2>Start the first lesson today.</h2>
+      <p>Seven lessons, free — no card required. See how poetry starts to make sense.</p>
+      <a href="#" class="btn btn-primary">Begin your first lesson</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-col" style="max-width:260px;">
+        <div class="logo" style="margin-bottom:14px;">Ver<em>so</em></div>
+        <p style="font-size:14px;color:var(--ink-soft);line-height:1.6;">A place to learn the language behind beautiful words.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Learn</h5>
+        <a href="#">Courses</a>
+        <a href="#">Encyclopedia</a>
+        <a href="#">Poem Analyzer</a>
+        <a href="#">AI Poet</a>
+      </div>
+      <div class="footer-col">
+        <h5>Community</h5>
+        <a href="#">Discover</a>
+        <a href="#">Challenges</a>
+        <a href="#">Leaderboard</a>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <a href="#">About</a>
+        <a href="#">Pricing</a>
+        <a href="#">Blog</a>
+        <a href="#">Help Center</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Verso. Made for poets, everywhere.</span>
+      <span>Port Harcourt → the world</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
