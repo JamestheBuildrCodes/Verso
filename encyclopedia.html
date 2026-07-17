@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Poetry Encyclopedia — Verso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F4EE;
+    --paper:#FEFCF8;
+    --ink:#1C1912;
+    --ink-soft:#5E584C;
+    --indigo:#221E5C;
+    --indigo-deep:#151238;
+    --terracotta:#B5502C;
+    --gold:#B4893A;
+    --line:rgba(28,25,18,0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative;}
+  body::before{
+    content:'';position:fixed;inset:0;z-index:999;pointer-events:none;opacity:0.035;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  h1,h2,h3,.serif{font-family:'Cormorant Garamond',serif;font-weight:500;color:var(--ink);}
+  .container{max-width:1220px;margin:0 auto;padding:0 clamp(20px,5vw,64px);}
+  a{color:inherit;text-decoration:none;}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:100;background:rgba(247,244,238,0.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  nav .container{display:flex;align-items:center;justify-content:space-between;height:78px;}
+  .logo{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:700;letter-spacing:0.01em;}
+  .logo em{color:var(--terracotta);font-style:normal;}
+  .nav-links{display:flex;gap:clamp(20px,3vw,38px);align-items:center;}
+  .nav-links a.link{font-size:14px;color:var(--ink-soft);font-weight:500;transition:color .25s;}
+  .nav-links a.link.active,.nav-links a.link:hover{color:var(--ink);}
+  .btn{display:inline-block;padding:13px 28px;border-radius:1px;font-size:14px;font-weight:600;transition:all .3s ease;letter-spacing:0.01em;}
+  .btn-primary{background:var(--indigo-deep);color:#fff;box-shadow:0 1px 0 rgba(0,0,0,0.05);}
+  .btn-primary:hover{background:var(--terracotta);transform:translateY(-1px);}
+  .nav-cta{display:none;}
+  @media(min-width:820px){.nav-cta{display:inline-block;}}
+
+  /* PAGE HERO */
+  .page-hero{padding:clamp(56px,8vw,84px) 0 clamp(40px,6vw,60px);}
+  .hero-eyebrow{font-size:12.5px;letter-spacing:0.16em;text-transform:uppercase;color:var(--terracotta);font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .hero-eyebrow::before{content:'';width:28px;height:1.5px;background:var(--terracotta);}
+  h1.page-title{font-size:clamp(38px,6vw,64px);line-height:1.02;letter-spacing:-0.015em;max-width:16ch;}
+  h1.page-title .accent{font-style:italic;color:var(--indigo-deep);}
+  .page-sub{font-size:clamp(16px,1.4vw,18px);color:var(--ink-soft);max-width:56ch;margin:22px 0 40px;line-height:1.65;}
+
+  /* SEARCH + FILTERS */
+  .search-bar{
+    display:flex;align-items:center;gap:14px;
+    background:var(--paper);border:1px solid var(--line);
+    padding:18px 24px;margin-bottom:28px;
+  }
+  .search-bar svg{flex-shrink:0;opacity:0.5;}
+  .search-bar input{
+    border:none;outline:none;background:none;flex:1;
+    font-family:'Inter',sans-serif;font-size:15.5px;color:var(--ink);
+  }
+  .search-bar input::placeholder{color:var(--ink-soft);}
+  .search-count{font-size:13px;color:var(--ink-soft);flex-shrink:0;}
+
+  .filter-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+  .chip{
+    padding:9px 18px;border:1px solid var(--line);font-size:13.5px;font-weight:600;
+    color:var(--ink-soft);cursor:pointer;transition:all .25s;background:var(--bg);
+  }
+  .chip.active{background:var(--indigo-deep);color:#fff;border-color:var(--indigo-deep);}
+  .chip:hover:not(.active){border-color:var(--terracotta);color:var(--ink);}
+
+  /* SECTION HEADERS (shared) */
+  .section{padding:clamp(50px,7vw,90px) 0;}
+  .section-alt{background:var(--indigo-deep);color:#fff;}
+  .eyebrow{font-size:12.5px;letter-spacing:0.15em;text-transform:uppercase;color:var(--terracotta);font-weight:700;margin-bottom:18px;}
+  .section-alt .eyebrow{color:#E8A165;}
+  h2.section-title{font-size:clamp(30px,4vw,46px);max-width:20ch;line-height:1.12;margin-bottom:20px;}
+  .section-alt h2.section-title{color:#fff;}
+  .section-desc{color:var(--ink-soft);max-width:52ch;font-size:16px;line-height:1.7;}
+  .section-alt .section-desc{color:#B9B6DC;}
+  .section-head-row{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;margin-bottom:44px;}
+  .section-num{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--ink-soft);letter-spacing:0.05em;}
+
+  /* ENTRY LIST */
+  .device-list{border-top:1px solid var(--line);}
+  .device-row{
+    display:grid;grid-template-columns:70px 1fr 1.1fr 100px;gap:28px;
+    padding:30px 0;border-bottom:1px solid var(--line);
+    align-items:start;transition:padding-left .3s ease;cursor:pointer;
+  }
+  .device-row:hover{padding-left:12px;}
+  @media(max-width:760px){.device-row{grid-template-columns:1fr;gap:10px;}}
+  .device-num{font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--line);font-weight:500;}
+  .device-row:hover .device-num{color:var(--terracotta);transition:color .3s;}
+  .device-name{font-family:'Cormorant Garamond',serif;font-size:24px;margin-bottom:6px;}
+  .device-cat{display:inline-block;font-size:10.5px;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);font-weight:700;border:1px solid rgba(180,137,58,0.4);padding:2px 8px;border-radius:1px;}
+  .device-desc{font-size:14px;color:var(--ink-soft);line-height:1.6;}
+  .device-example{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16.5px;color:var(--indigo-deep);border-left:2px solid var(--gold);padding-left:14px;line-height:1.5;}
+  .device-arrow{align-self:center;justify-self:end;font-size:13px;color:var(--ink-soft);font-weight:600;}
+  @media(max-width:760px){.device-arrow{display:none;}}
+
+  /* DEEP DIVE ENTRY */
+  .entry-head{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:14px;}
+  .entry-eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:0.1em;color:var(--terracotta);font-weight:700;}
+  h2.entry-title{font-size:clamp(36px,5vw,56px);line-height:1.02;margin-bottom:18px;}
+  .entry-lede{font-size:17px;color:var(--ink-soft);max-width:60ch;line-height:1.7;margin-bottom:56px;}
+
+  .entry-grid{display:grid;grid-template-columns:1fr 320px;gap:56px;}
+  @media(max-width:900px){.entry-grid{grid-template-columns:1fr;}}
+
+  .entry-block{margin-bottom:44px;}
+  .entry-block h4{font-family:'Cormorant Garamond',serif;font-size:13px;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);font-weight:700;margin-bottom:14px;font-style:normal;}
+  .entry-block p{font-size:15.5px;color:var(--ink-soft);line-height:1.75;max-width:64ch;}
+  .entry-example-card{
+    background:var(--paper);border-left:3px solid var(--indigo-deep);padding:24px 28px;margin-top:16px;
+  }
+  .entry-example-poem{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;line-height:1.7;color:var(--ink);margin-bottom:10px;}
+  .entry-example-attr{font-size:12.5px;color:var(--ink-soft);}
+  .related-tags{display:flex;gap:10px;flex-wrap:wrap;}
+  .related-tags a{font-size:13px;padding:7px 14px;border:1px solid var(--line);color:var(--ink-soft);transition:all .25s;}
+  .related-tags a:hover{border-color:var(--terracotta);color:var(--ink);}
+
+  /* Sidebar cards */
+  .side-card{background:var(--indigo-deep);color:#fff;padding:28px;margin-bottom:20px;position:relative;overflow:hidden;}
+  .side-card-label{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:#E8A165;font-weight:700;margin-bottom:14px;}
+  .side-card p{font-size:14px;color:#D9D7F0;line-height:1.65;margin-bottom:16px;}
+  .side-card .btn-primary{background:var(--terracotta);width:100%;text-align:center;padding:12px;font-size:13.5px;}
+  .side-quiz{background:var(--paper);border:1px solid var(--line);padding:28px;}
+  .side-quiz-label{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);font-weight:700;margin-bottom:14px;}
+  .side-quiz-q{font-family:'Cormorant Garamond',serif;font-size:18px;margin-bottom:16px;line-height:1.4;}
+  .quiz-opt{padding:10px 14px;border:1px solid var(--line);font-size:13.5px;margin-bottom:8px;cursor:pointer;transition:all .2s;}
+  .quiz-opt:hover{border-color:var(--terracotta);}
+
+  /* FOOTER (shared) */
+  footer{border-top:1px solid var(--line);padding:60px 0 40px;background:var(--bg);}
+  .footer-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:40px;margin-bottom:50px;}
+  .footer-col h5{font-size:12px;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-soft);margin-bottom:18px;font-weight:700;}
+  .footer-col a{display:block;font-size:14.5px;color:var(--ink);margin-bottom:11px;opacity:0.82;}
+  .footer-col a:hover{opacity:1;color:var(--terracotta);}
+  .footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;border-top:1px solid var(--line);padding-top:26px;font-size:13px;color:var(--ink-soft);}
+
+  .fade-up{opacity:0;transform:translateY(24px);transition:opacity .7s ease, transform .7s ease;}
+  .fade-up.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <div class="logo">Ver<em>so</em></div>
+    <div class="nav-links">
+      <a href="index.html#devices" class="link active">Learn</a>
+      <a href="index.html#ai" class="link">AI Poet</a>
+      <a href="index.html#path" class="link">Paths</a>
+      <a href="index.html#stage" class="link">Stage</a>
+      <a href="#" class="link nav-cta">Log in</a>
+      <a href="#" class="btn btn-primary">Start Free</a>
+    </div>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="hero-eyebrow">The largest poetry encyclopedia online</div>
+    <h1 class="page-title">Every term, form, and <span class="accent">device</span> — explained properly.</h1>
+    <p class="page-sub">240 entries and counting. Each one pairs a clear definition with real examples, history, related concepts, and an AI explanation tuned to how you learn.</p>
+
+    <div class="search-bar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search metaphor, sonnet, caesura, imagism…">
+      <span class="search-count">240 entries</span>
+    </div>
+
+    <div class="filter-row">
+      <div class="chip active">All</div>
+      <div class="chip">Devices</div>
+      <div class="chip">Forms</div>
+      <div class="chip">Movements</div>
+      <div class="chip">Poets</div>
+      <div class="chip">Terms</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="index">
+  <div class="container">
+    <div class="section-head-row">
+      <div>
+        <div class="eyebrow">Browse the encyclopedia</div>
+        <h2 class="section-title">Start anywhere. Everything links to everything.</h2>
+      </div>
+      <div class="section-num">A curated starting six</div>
+    </div>
+
+    <div class="device-list">
+      <div class="device-row fade-up">
+        <div class="device-num">01</div>
+        <div>
+          <span class="device-cat">Device</span>
+          <div class="device-name" style="margin-top:8px;">Metaphor</div>
+          <div class="device-desc">A direct comparison that lets one thing speak as another, without saying "like" or "as."</div>
+        </div>
+        <div class="device-example">"Hope is the thing with feathers—"</div>
+        <div class="device-arrow">Read →</div>
+      </div>
+      <div class="device-row fade-up">
+        <div class="device-num">02</div>
+        <div>
+          <span class="device-cat">Device</span>
+          <div class="device-name" style="margin-top:8px;">Enjambment</div>
+          <div class="device-desc">A sentence that spills past the line break, carrying the reader forward before the thought resolves.</div>
+        </div>
+        <div class="device-example">"...and miles to go before I sleep—"</div>
+        <div class="device-arrow">Read →</div>
+      </div>
+      <div class="device-row fade-up">
+        <div class="device-num">03</div>
+        <div>
+          <span class="device-cat">Form</span>
+          <div class="device-name" style="margin-top:8px;">The Sonnet</div>
+          <div class="device-desc">Fourteen lines, one turn. The form that taught English poetry how to argue with itself.</div>
+        </div>
+        <div class="device-example">"Shall I compare thee to a summer's day?"</div>
+        <div class="device-arrow">Read →</div>
+      </div>
+      <div class="device-row fade-up">
+        <div class="device-num">04</div>
+        <div>
+          <span class="device-cat">Movement</span>
+          <div class="device-name" style="margin-top:8px;">The Harlem Renaissance</div>
+          <div class="device-desc">A flowering of Black American poetry, music, and thought centered in 1920s Harlem.</div>
+        </div>
+        <div class="device-example">"I, too, sing America."</div>
+        <div class="device-arrow">Read →</div>
+      </div>
+      <div class="device-row fade-up">
+        <div class="device-num">05</div>
+        <div>
+          <span class="device-cat">Term</span>
+          <div class="device-name" style="margin-top:8px;">Caesura</div>
+          <div class="device-desc">A deliberate pause or break within a line — punctuation as breath, not just grammar.</div>
+        </div>
+        <div class="device-example">"To be, or not to be — that is the question—"</div>
+        <div class="device-arrow">Read →</div>
+      </div>
+      <div class="device-row fade-up">
+        <div class="device-num">06</div>
+        <div>
+          <span class="device-cat">Form</span>
+          <div class="device-name" style="margin-top:8px;">The Villanelle</div>
+          <div class="device-desc">Nineteen lines, two refrains, five tercets and a quatrain — repetition built to devastate.</div>
+        </div>
+        <div class="device-example">"Do not go gentle into that good night."</div>
+        <div class="device-arrow">Read →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="entry">
+  <div class="container">
+    <div class="entry-head">
+      <span class="entry-eyebrow">Device · 01 of 240</span>
+    </div>
+    <h2 class="entry-title">Metaphor</h2>
+    <p class="entry-lede">A direct comparison that lets one thing speak as another — no "like," no "as," just identity asserted between two unlike things.</p>
+
+    <div class="entry-grid">
+      <div>
+        <div class="entry-block fade-up">
+          <h4>Definition</h4>
+          <p>A metaphor names one thing as if it were another, asking the reader to carry the qualities of the second thing onto the first. Where a simile says something <em>is like</em> something else, a metaphor simply says it <em>is</em>.</p>
+        </div>
+
+        <div class="entry-block fade-up">
+          <h4>History</h4>
+          <p>Aristotle called metaphor "the greatest thing by far" a poet could master — the ability to see resemblance between dissimilar things. It's the oldest device in the encyclopedia, present in the earliest surviving verse in every language Verso has catalogued.</p>
+        </div>
+
+        <div class="entry-block fade-up">
+          <h4>Examples in the wild</h4>
+          <div class="entry-example-card">
+            <div class="entry-example-poem">"Hope is the thing with feathers—<br>that perches in the soul—"</div>
+            <div class="entry-example-attr">Emily Dickinson, on hope as a bird that never leaves</div>
+          </div>
+        </div>
+
+        <div class="entry-block fade-up">
+          <h4>Related concepts</h4>
+          <div class="related-tags">
+            <a href="#">Simile</a>
+            <a href="#">Extended metaphor</a>
+            <a href="#">Personification</a>
+            <a href="#">Conceit</a>
+            <a href="#">Symbolism</a>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="side-card fade-up">
+          <div class="side-card-label">AI Explanation</div>
+          <p>"Think of metaphor as a bridge with no railing — the poet just walks you across and trusts you'll feel the drop." Ask Verso's AI to explain any entry a different way, or in a language you're more comfortable in.</p>
+          <a href="#" class="btn btn-primary">Ask the AI Mentor</a>
+        </div>
+        <div class="side-quiz fade-up">
+          <div class="side-quiz-label">Quick check</div>
+          <div class="side-quiz-q">Which line uses metaphor, not simile?</div>
+          <div class="quiz-opt">"Her voice was like a bell."</div>
+          <div class="quiz-opt">"Her voice was a bell, ringing through the hall."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-col" style="max-width:260px;">
+        <div class="logo" style="margin-bottom:14px;">Ver<em>so</em></div>
+        <p style="font-size:14px;color:var(--ink-soft);line-height:1.6;">A place to learn the language behind beautiful words.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Learn</h5>
+        <a href="index.html#devices">Courses</a>
+        <a href="encyclopedia.html">Encyclopedia</a>
+        <a href="#">Poem Analyzer</a>
+        <a href="index.html#ai">AI Poet</a>
+      </div>
+      <div class="footer-col">
+        <h5>Community</h5>
+        <a href="#">Discover</a>
+        <a href="#">Challenges</a>
+        <a href="#">Leaderboard</a>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <a href="#">About</a>
+        <a href="#">Pricing</a>
+        <a href="#">Blog</a>
+        <a href="#">Help Center</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Verso. Made for poets, everywhere.</span>
+      <span>Port Harcourt → the world</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
